@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geometric-transforms"
+version = "0.1.0"
+description = "A library for 2D geometric point transformations"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+keywords = ["geometry", "transformations", "point", "rotation", "translation", "reflection", "dilation"]
+
+[project.urls]
+Homepage = "https://github.com/saahir/geometric-transforms"
+Repository = "https://github.com/saahir/geometric-transforms"
+Issues = "https://github.com/saahir/geometric-transforms/issues"
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
