@@ -72,11 +72,13 @@ class Point:
 
     def magnitude(self) -> float:
         """Distance from origin (vector length): Point(3,4).magnitude() = 5.0"""
-        return math.sqrt(self.x ** 2 + self.y ** 2)
+        return math.sqrt(self.x * self.x + self.y * self.y)
 
     def distance(self, other: "Point") -> float:
         """Distance to another point: Point(0,0).distance(Point(3,4)) = 5.0"""
-        return math.sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
+        dx = self.x - other.x
+        dy = self.y - other.y
+        return math.sqrt(dx * dx + dy * dy)
 
     def dot(self, other: "Point") -> float:
         """Dot product: Point(1,2).dot(Point(3,4)) = 11"""
@@ -106,8 +108,10 @@ class Point:
         """Rotate this point around a center by given degrees (CCW positive)."""
         radians = math.radians(degrees)
         translated = self - center
-        rotated_x = translated.x * math.cos(radians) - translated.y * math.sin(radians)
-        rotated_y = translated.x * math.sin(radians) + translated.y * math.cos(radians)
+        cos_theta = math.cos(radians)
+        sin_theta = math.sin(radians)
+        rotated_x = translated.x * cos_theta - translated.y * sin_theta
+        rotated_y = translated.x * sin_theta + translated.y * cos_theta
         return Point(rotated_x, rotated_y) + center
 
     def reflect_over(self, line_point1: "Point", line_point2: "Point") -> "Point":
@@ -118,7 +122,8 @@ class Point:
         if dx == 0 and dy == 0:
             return self.copy()
 
-        t = ((self.x - line_point1.x) * dx + (self.y - line_point1.y) * dy) / (dx * dx + dy * dy)
+        dx_sq_plus_dy_sq = dx * dx + dy * dy
+        t = ((self.x - line_point1.x) * dx + (self.y - line_point1.y) * dy) / dx_sq_plus_dy_sq
         closest_x = line_point1.x + t * dx
         closest_y = line_point1.y + t * dy
 

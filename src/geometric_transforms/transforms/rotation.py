@@ -93,8 +93,10 @@ def rotate_custom(point: Point, center: Point, degrees: float) -> Point:
 
     # Apply rotation matrix: [cos(θ) -sin(θ)] [x]   [x*cos(θ) - y*sin(θ)]
     #                        [sin(θ)  cos(θ)] [y] = [x*sin(θ) + y*cos(θ)]
-    rotated_x = temp_x * math.cos(radians) - temp_y * math.sin(radians)
-    rotated_y = temp_x * math.sin(radians) + temp_y * math.cos(radians)
+    cos_theta = math.cos(radians)
+    sin_theta = math.sin(radians)
+    rotated_x = temp_x * cos_theta - temp_y * sin_theta
+    rotated_y = temp_x * sin_theta + temp_y * cos_theta
 
     # Translate the point back to the original position
     return Point(rotated_x + center.x, rotated_y + center.y)

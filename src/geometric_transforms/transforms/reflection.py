@@ -81,8 +81,9 @@ def reflect_custom_line(point: Point, m: float, b: float) -> Point:
     # x' = (x(1 - m²) + 2m(y - b)) / (1 + m²)
     # y' = (2mx + y(m² - 1) + 2b) / (1 + m²)
 
-    denom = 1 + m * m
-    new_x = (point.x * (1 - m * m) + 2 * m * (point.y - b)) / denom
-    new_y = (2 * m * point.x + point.y * (m * m - 1) + 2 * b) / denom
+    m_squared = m * m
+    denom = 1 + m_squared
+    new_x = (point.x * (1 - m_squared) + 2 * m * (point.y - b)) / denom
+    new_y = (2 * m * point.x + point.y * (m_squared - 1) + 2 * b) / denom
 
     return Point(new_x, new_y)
