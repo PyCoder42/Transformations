@@ -137,31 +137,30 @@ def get_csv_points() -> list[Point]:
             continue
 
         try:
+            # First pass: read only first row to detect headers and column count
             with open(filepath, "r", newline="") as f:
                 reader = csv.reader(f)
-                rows = list(reader)
+                first_row = next(reader, None)
 
-            if len(rows) < 1:
+            if first_row is None:
                 print("Error: CSV file is empty.")
                 continue
 
-            # Check if first row looks like a header (non-numeric)
-            first_row = rows[0]
+            # Check if first row looks like a header (check first two columns only)
             has_header = False
             try:
-                [float(v) for v in first_row]
-            except ValueError:
+                float(first_row[0])
+                float(first_row[1])
+            except (ValueError, IndexError):
                 has_header = True
 
             if has_header:
                 headers = first_row
-                data_rows = rows[1:]
                 print(f"\nDetected header row with {len(headers)} columns:")
                 for i, h in enumerate(headers):
                     print(f"  {i + 1}. {h}")
             else:
                 headers = [f"Column {i + 1}" for i in range(len(first_row))]
-                data_rows = rows
                 print(f"\nNo header detected. Found {len(headers)} columns:")
                 for i, h in enumerate(headers):
                     print(f"  {i + 1}. {h}")
@@ -179,19 +178,27 @@ def get_csv_points() -> list[Point]:
                 print("Error: X and Y columns must be different.")
                 continue
 
-            # Parse points
+            # Second pass: stream rows and parse points
             points = []
             errors = []
-            for row_num, row in enumerate(data_rows, start=2 if has_header else 1):
-                if len(row) <= max(x_col, y_col):
-                    errors.append(f"Row {row_num}: Not enough columns")
-                    continue
-                try:
-                    x = float(row[x_col])
-                    y = float(row[y_col])
-                    points.append(Point(x, y))
-                except ValueError:
-                    errors.append(f"Row {row_num}: Could not parse '{row[x_col]}', '{row[y_col]}'")
+            with open(filepath, "r", newline="") as f:
+                reader = csv.reader(f)
+                if has_header:
+                    next(reader)  # Skip header row
+                    start_row = 2
+                else:
+                    start_row = 1
+
+                for row_num, row in enumerate(reader, start=start_row):
+                    if len(row) <= max(x_col, y_col):
+                        errors.append(f"Row {row_num}: Not enough columns")
+                        continue
+                    try:
+                        x = float(row[x_col])
+                        y = float(row[y_col])
+                        points.append(Point(x, y))
+                    except ValueError:
+                        errors.append(f"Row {row_num}: Could not parse '{row[x_col]}', '{row[y_col]}'")
 
             if errors:
                 print(f"\nWarnings ({len(errors)} rows skipped):")
